@@ -119,10 +119,6 @@ int main() {
             return 0;
         }
     }
-    if(numeralSystemFrom == numeralSystemTo) {
-        printf("%s\n", numberFrom);
-        return 0;
-    }
     convertNumber(numberFrom, numeralSystemFrom, numberTo, numeralSystemTo);
 
     printf("%s\n", numberTo);
