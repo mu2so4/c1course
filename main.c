@@ -3,42 +3,45 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
-#define ulli unsigned long long int
-#define ldoub long double
+#define FRACTION_PRECISION (12)
+#define MAX_IN_LENGTH (15)
+#define MAX_OUT_LENGTH (60)
+typedef unsigned long long int bigInteger;
+typedef long double bigDouble;
 
 int digitToInt(char textDigit, int numeralSystem) {
     int digit = -1;
     if(isdigit(textDigit)) digit = (int) (textDigit - '0');
-        else {
-            switch(textDigit) {
-                case 'a':
-                case 'A':
-                    digit = 10;
-                    break;
-                case 'b':
-                case 'B':
-                    digit = 11;
-                    break;
-                case 'c':
-                case 'C':
-                    digit = 12;
-                    break;
-                case 'd':
-                case 'D':
-                    digit = 13;
-                    break;
-                case 'e':
-                case 'E':
-                    digit = 14;
-                    break;
-                case 'f':
-                case 'F':
-                    digit = 15;
-                    break;
-                default:
-                    return -1;
-            }
+    else {
+        switch(textDigit) {
+            case 'a':
+            case 'A':
+                digit = 10;
+                break;
+            case 'b':
+            case 'B':
+                digit = 11;
+                break;
+            case 'c':
+            case 'C':
+                digit = 12;
+                break;
+            case 'd':
+            case 'D':
+                digit = 13;
+                break;
+            case 'e':
+            case 'E':
+                digit = 14;
+                break;
+            case 'f':
+            case 'F':
+                digit = 15;
+                break;
+            default:
+                return -1;
         }
+    }
     if(digit >= numeralSystem) return -1;
     return digit;
 }
@@ -59,8 +62,8 @@ void strrev(char *str, int length) {
 }
 
 void convertNumber(char* inNumber, int numSysIn, char* outNumber, int numSysOut) {
-    ulli number = 0, trunc = 0;
-    ldoub fract = .0;
+    bigInteger number = 0, trunc = 0;
+    bigDouble fraction = .0;
     int period = -1, power = 0, pos = 0;
 
     for(; power < 16 && inNumber[power] != '\0'; power++) {
@@ -73,19 +76,19 @@ void convertNumber(char* inNumber, int numSysIn, char* outNumber, int numSysOut)
     }
     if(period == -1) trunc = number;
     else {
-        fract = (ldoub) number / powl(numSysIn, power - period - 1.0);
-        trunc = (ulli) fract;
-        fract -= trunc;
+        fraction = (bigDouble) number / powl(numSysIn, power - period - 1.0);
+        trunc = (bigInteger) fraction;
+        fraction -= trunc;
 
-        for(int i = 0; i < 12; i++) {
-            fract *= numSysOut;
-            int digit = (int) fract;
+        for(int i = 0; i < FRACTION_PRECISION; i++) {
+            fraction *= numSysOut;
+            int digit = (int) fraction;
             outNumber[i] = intToDigit(digit);
-            fract -= digit;
+            fraction -= digit;
         }
-        strrev(outNumber, 12);
-        outNumber[12] = '.';
-        pos = 13;
+        strrev(outNumber, strlen(outNumber));
+        outNumber[FRACTION_PRECISION] = '.';
+        pos = FRACTION_PRECISION + 1;
     }
     do {
         int digit = trunc % numSysOut;
@@ -93,12 +96,11 @@ void convertNumber(char* inNumber, int numSysIn, char* outNumber, int numSysOut)
         pos++;
         trunc /= numSysOut;
     } while(trunc > 0);
-    strrev(outNumber, pos);
+    strrev(outNumber, strlen(outNumber));
 }
 
 int main() {
     const char ERR[] = "bad input\n";
-    const int MAX_IN_LENGTH = 15, MAX_OUT_LENGTH = 60;
     int numeralSystemFrom, numeralSystemTo;
     char numberFrom[MAX_IN_LENGTH], numberTo[MAX_OUT_LENGTH];
     for(int i = 0; i < MAX_OUT_LENGTH; i++) numberTo[i] = '\0';
