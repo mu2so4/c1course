@@ -50,6 +50,10 @@ char intToDigit(int digit) {
     return (digit > 9 ? 'a' + (char) (digit - 10) : '0' + (char) digit);
 }
 
+int isBetweenNotStrict(int leftBound, int rightBound, int number) {
+    return number >= leftBound && number <= rightBound;
+}
+
 void swap(char *a, char *b) {
     char t = *a;
     *a = *b;
@@ -112,7 +116,8 @@ int main() {
 
     numberFrom[strlen(numberFrom) - 1] = '\0';
 
-    if((numeralSystemFrom - 2) * (numeralSystemFrom - 16) > 0 || (numeralSystemTo - 2) * (numeralSystemTo - 16) > 0) {
+    if(!isBetweenNotStrict(2, 16, numeralSystemFrom) ||
+       !isBetweenNotStrict(2, 16, numeralSystemTo)) {
         printf(ERR);
         return 0;
     }
