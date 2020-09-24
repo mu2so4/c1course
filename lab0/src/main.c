@@ -67,7 +67,6 @@ void strrev(char *str, int length) {
 
 void convertNumber(char* inNumber, int numSysIn, char* outNumber, int numSysOut) {
     bigInteger number = 0, trunc = 0;
-    bigDouble fraction = .0;
     int period = -1, power = 0, pos = 0, fractExists = 0;
 
     for(; power < MAX_IN_LENGTH + 1 && inNumber[power] != '\0'; power++) {
@@ -83,7 +82,7 @@ void convertNumber(char* inNumber, int numSysIn, char* outNumber, int numSysOut)
     power--;
     if(period == -1) trunc = number;
     else {
-        fraction = (bigDouble) number / powl(numSysIn, power - period);
+        bigDouble fraction = (bigDouble) number / powl(numSysIn, power - period);
         trunc = (bigInteger) fraction;
         fraction -= trunc;
         if(fractExists) {
