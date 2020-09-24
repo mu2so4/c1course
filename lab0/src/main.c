@@ -79,10 +79,7 @@ void convertNumber(char* inNumber, int numSysIn, char* outNumber, int numSysOut)
         number += (int) digitToInt(inNumber[power], numSysIn);
     }
     power--;
-    if(number == 0 && period != -1) {
-        outNumber[0] = '.';
-        return;
-    }
+    if(inNumber[power] == '.') period = -1;
     if(period == -1) trunc = number;
     else {
         fraction = (bigDouble) number / powl(numSysIn, power - period);
