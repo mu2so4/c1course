@@ -66,7 +66,7 @@ void convertNumber(char* inNumber, int numSysIn, char* outNumber, int numSysOut)
     bigDouble fraction = .0;
     int period = -1, power = 0, pos = 0;
 
-    for(; power < 16 && inNumber[power + 1] != '\0'; power++) {
+    for(; power < 16 && inNumber[power] != '\0'; power++) {
         if(inNumber[power] == '.') {
             period = power;
             continue;
@@ -105,14 +105,18 @@ int main() {
     char numberFrom[MAX_IN_LENGTH], numberTo[MAX_OUT_LENGTH];
     for(int i = 0; i < MAX_OUT_LENGTH; i++) numberTo[i] = '\0';
 
-    scanf("%d %d\n", &numeralSystemFrom, &numeralSystemTo);
-    fgets(numberFrom, sizeof(numberFrom), stdin);
+    if(!scanf("%d %d\n", &numeralSystemFrom, &numeralSystemTo))
+        exit(EXIT_FAILURE);
+    if(!fgets(numberFrom, sizeof(numberFrom), stdin))
+        exit(EXIT_FAILURE);
+
+    numberFrom[strlen(numberFrom) - 1] = '\0';
 
     if((numeralSystemFrom - 2) * (numeralSystemFrom - 16) > 0 || (numeralSystemTo - 2) * (numeralSystemTo - 16) > 0) {
         printf(ERR);
         return 0;
     }
-    for(unsigned i = 0; i < strlen(numberFrom) - 1; i++) {
+    for(unsigned i = 0; i < strlen(numberFrom); i++) {
         char textDigit = numberFrom[i];
         if(textDigit == '.') {
             periodsCount++;
