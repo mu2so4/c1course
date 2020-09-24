@@ -68,33 +68,35 @@ void strrev(char *str, int length) {
 void convertNumber(char* inNumber, int numSysIn, char* outNumber, int numSysOut) {
     bigInteger number = 0, trunc = 0;
     bigDouble fraction = .0;
-    int period = -1, power = 0, pos = 0;
+    int period = -1, power = 0, pos = 0, fractExists = 0;
 
     for(; power < MAX_IN_LENGTH + 1 && inNumber[power] != '\0'; power++) {
         if(inNumber[power] == '.') {
             period = power;
             continue;
         }
+        int digit = (int) digitToInt(inNumber[power], numSysIn);
         number *= numSysIn;
-        number += (int) digitToInt(inNumber[power], numSysIn);
+        number += digit;
+        fractExists |= period != -1 && digit != 0;
     }
     power--;
-    if(inNumber[power] == '.') period = -1;
     if(period == -1) trunc = number;
     else {
         fraction = (bigDouble) number / powl(numSysIn, power - period);
         trunc = (bigInteger) fraction;
         fraction -= trunc;
-
-        for(int i = 0; i < FRACTION_PRECISION; i++) {
-            fraction *= numSysOut;
-            int digit = (int) fraction;
-            outNumber[i] = intToDigit(digit);
-            fraction -= digit;
+        if(fractExists) {
+            for(int i = 0; i < FRACTION_PRECISION; i++) {
+                fraction *= numSysOut;
+                int digit = (int) fraction;
+                outNumber[i] = intToDigit(digit);
+                fraction -= digit;
+            }
+            strrev(outNumber, strlen(outNumber));
+            outNumber[FRACTION_PRECISION] = '.';
+            pos = FRACTION_PRECISION + 1;
         }
-        strrev(outNumber, strlen(outNumber));
-        outNumber[FRACTION_PRECISION] = '.';
-        pos = FRACTION_PRECISION + 1;
     }
     do {
         int digit = trunc % numSysOut;
@@ -127,7 +129,7 @@ int main() {
         char textDigit = numberFrom[i];
         if(textDigit == '.') {
             periodsCount++;
-            if(periodsCount > 1) {
+            if(periodsCount > 1 || i == 0) {
                 printf(ERR);
                 return 0;
             }
@@ -138,6 +140,10 @@ int main() {
             printf(ERR);
             return 0;
         }
+    }
+    if(numberFrom[strlen(numberFrom) - 1] == '.') {
+        printf(ERR);
+        return 0;
     }
     convertNumber(numberFrom, numeralSystemFrom, numberTo, numeralSystemTo);
 
