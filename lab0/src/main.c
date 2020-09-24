@@ -70,7 +70,7 @@ void convertNumber(char* inNumber, int numSysIn, char* outNumber, int numSysOut)
     bigDouble fraction = .0;
     int period = -1, power = 0, pos = 0;
 
-    for(; power < 16 && inNumber[power] != '\0'; power++) {
+    for(; power < MAX_IN_LENGTH + 1 && inNumber[power] != '\0'; power++) {
         if(inNumber[power] == '.') {
             period = power;
             continue;
@@ -136,10 +136,6 @@ int main() {
             printf(ERR);
             return 0;
         }
-    }
-    if(numeralSystemFrom == numeralSystemTo) {
-        printf("%s\n", numberFrom);
-        return 0;
     }
     convertNumber(numberFrom, numeralSystemFrom, numberTo, numeralSystemTo);
 
