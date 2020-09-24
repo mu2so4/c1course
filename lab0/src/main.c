@@ -78,9 +78,14 @@ void convertNumber(char* inNumber, int numSysIn, char* outNumber, int numSysOut)
         number *= numSysIn;
         number += (int) digitToInt(inNumber[power], numSysIn);
     }
+    power--;
+    if(number == 0 && period != -1) {
+        outNumber[0] = '.';
+        return;
+    }
     if(period == -1) trunc = number;
     else {
-        fraction = (bigDouble) number / powl(numSysIn, power - period - 1.0);
+        fraction = (bigDouble) number / powl(numSysIn, power - period);
         trunc = (bigInteger) fraction;
         fraction -= trunc;
 
