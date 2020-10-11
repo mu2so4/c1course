@@ -7,7 +7,7 @@
 #define BAD_INPUT "bad input\n"
 
 void printAllVarsInternal(
-        const char number[SEQUENCE_MAX_LENGTH],
+        const char* number,
         int* count,
         char* candidate,
         char* digits,
@@ -37,7 +37,7 @@ void printAllVarsInternal(
     }
 }
 
-int printAllVars(const char number[SEQUENCE_MAX_LENGTH], int count) {
+int printAllVars(const char* number, int count) {
     short freeDigits = 0;
     char candidate[DIGITS_COUNT + 1], digits[DIGITS_COUNT];
     for(int index = 0; index < DIGITS_COUNT; index++)
