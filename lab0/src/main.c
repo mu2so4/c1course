@@ -3,15 +3,17 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
-#define FRACTION_PRECISION (12)
-#define MAX_IN_LENGTH (15)
-#define MAX_OUT_LENGTH (60)
+#define FRACTION_PRECISION 12
+#define MAX_IN_LENGTH 15
+#define MAX_OUT_LENGTH 60
 typedef unsigned long long int bigInteger;
 typedef long double bigDouble;
 
 int digitToInt(char textDigit, int numeralSystem) {
     int digit = -1;
-    if(isdigit(textDigit)) digit = (int) (textDigit - '0');
+    if(isdigit(textDigit)) {
+        digit = (int) (textDigit - '0');
+    }
     else {
         switch(textDigit) {
             case 'a':
@@ -42,7 +44,9 @@ int digitToInt(char textDigit, int numeralSystem) {
                 return -1;
         }
     }
-    if(digit >= numeralSystem) return -1;
+    if(digit >= numeralSystem) {
+        return -1;
+    }
     return digit;
 }
 
@@ -61,8 +65,9 @@ void swap(char *a, char *b) {
 }
 
 void strrev(char *str, int length) {
-    for(int i = 0; i < length / 2; i++)
+    for(int i = 0; i < length / 2; i++) {
         swap(&str[i], &str[length - 1 - i]);
+    }
 }
 
 void convertNumber(char* inNumber, int numSysIn, char* outNumber, int numSysOut) {
@@ -80,7 +85,9 @@ void convertNumber(char* inNumber, int numSysIn, char* outNumber, int numSysOut)
         fractExists |= period != -1 && digit != 0;
     }
     power--;
-    if(period == -1) trunc = number;
+    if(period == -1) {
+        trunc = number;
+    }
     else {
         bigDouble fraction = (bigDouble) number / powl(numSysIn, power - period);
         trunc = (bigInteger) fraction;
@@ -110,12 +117,16 @@ int main() {
     const char ERR[] = "bad input\n";
     int numeralSystemFrom, numeralSystemTo, periodsCount = 0;
     char numberFrom[MAX_IN_LENGTH], numberTo[MAX_OUT_LENGTH];
-    for(int i = 0; i < MAX_OUT_LENGTH; i++) numberTo[i] = '\0';
+    for(int i = 0; i < MAX_OUT_LENGTH; i++) {
+        numberTo[i] = '\0';
+    }
 
-    if(!scanf("%d %d\n", &numeralSystemFrom, &numeralSystemTo))
+    if(!scanf("%d %d\n", &numeralSystemFrom, &numeralSystemTo)) {
         exit(EXIT_FAILURE);
-    if(!fgets(numberFrom, sizeof(numberFrom), stdin))
+    }
+    if(!fgets(numberFrom, sizeof(numberFrom), stdin)) {
         exit(EXIT_FAILURE);
+    }
 
     numberFrom[strlen(numberFrom) - 1] = '\0';
 
