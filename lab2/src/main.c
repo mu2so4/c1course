@@ -14,7 +14,6 @@ void printAllVarsInternal(
         short freeDigits,
         short depth,
         short more) {
-    //printf("%d %d\n", *count, freeDigits);
     if(*count == 0) {
         return;
     }
@@ -31,7 +30,6 @@ void printAllVarsInternal(
         digits[index] = 0;
         char current = '0' + index;
         candidate[strlen(candidate)] = current;
-        //printf("%s\n", candidate);
         if(more) {
             printAllVarsInternal(number, count, candidate, digits, freeDigits - 1, depth + 1, 1);
         }
@@ -76,11 +74,11 @@ int main() {
     char sequence[SEQUENCE_MAX_LENGTH];
     int count;
     if(!fgets(sequence, SEQUENCE_MAX_LENGTH, stdin)) {
-        exit(1);
+        return 0;
     }
     sequence[strlen(sequence) - 1] = '\0';
     if(!scanf("%d", &count)) {
-        exit(1);
+        return 0;
     }
 
     if(!printAllVars(sequence, count)) {
