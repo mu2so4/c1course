@@ -51,12 +51,12 @@ int main() {
     srand(time(NULL));
     int length;
     if(!scanf("%d\n", &length)) {
-        exit(1);
+        return 0;
     }
     integer array[length];
     for(int i = 0; i < length; i++) {
         if(!scanf("%d", &array[i])) {
-            exit(1);
+            return 0;
         }
     }
 
