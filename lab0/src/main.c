@@ -122,10 +122,10 @@ int main() {
     }
 
     if(!scanf("%d %d\n", &numeralSystemFrom, &numeralSystemTo)) {
-        exit(EXIT_FAILURE);
+        return 0;
     }
     if(!fgets(numberFrom, sizeof(numberFrom), stdin)) {
-        exit(EXIT_FAILURE);
+        return 0;
     }
 
     numberFrom[strlen(numberFrom) - 1] = '\0';
