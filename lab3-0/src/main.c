@@ -1,19 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-typedef int integer;
 
 int randomInt(int lower, int upper) {
     return rand() % (upper - lower) + lower;
 }
 
-void swap(integer *number1, integer *number2) {
+void swap(int *number1, int *number2) {
     int exchange = *number1;
     *number1 = *number2;
     *number2 = exchange;
 }
 
-void quickSort(integer *arr, int startIndex, int endIndex) {
+void quickSort(int *arr, int startIndex, int endIndex) {
     int left = startIndex + 1, right = endIndex - 1, same = 0;
     if(startIndex >= right) {
         return;
@@ -50,12 +49,12 @@ void quickSort(integer *arr, int startIndex, int endIndex) {
 int main() {
     srand(time(NULL));
     int length;
-    if(!scanf("%d\n", &length)) {
+    if(scanf("%d\n", &length) < 1) {
         return 0;
     }
-    integer array[length];
+    int array[length];
     for(int i = 0; i < length; i++) {
-        if(!scanf("%d", &array[i])) {
+        if(scanf("%d", &array[i]) < 1) {
             return 0;
         }
     }
