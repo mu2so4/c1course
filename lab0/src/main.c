@@ -121,10 +121,10 @@ int main() {
         numberTo[i] = '\0';
     }
 
-    if(!scanf("%d %d\n", &numeralSystemFrom, &numeralSystemTo)) {
+    if(scanf("%d %d\n", &numeralSystemFrom, &numeralSystemTo) < 2) {
         return 0;
     }
-    if(!fgets(numberFrom, sizeof(numberFrom), stdin)) {
+    if(fgets(numberFrom, sizeof(numberFrom), stdin) == NULL) {
         return 0;
     }
 
