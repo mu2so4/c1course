@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
@@ -15,33 +14,11 @@ int digitToInt(char textDigit, int numeralSystem) {
         digit = (int) (textDigit - '0');
     }
     else {
-        switch(textDigit) {
-            case 'a':
-            case 'A':
-                digit = 10;
-                break;
-            case 'b':
-            case 'B':
-                digit = 11;
-                break;
-            case 'c':
-            case 'C':
-                digit = 12;
-                break;
-            case 'd':
-            case 'D':
-                digit = 13;
-                break;
-            case 'e':
-            case 'E':
-                digit = 14;
-                break;
-            case 'f':
-            case 'F':
-                digit = 15;
-                break;
-            default:
-                return -1;
+        if(isupper(textDigit)) {
+            digit = textDigit - 'A' + 10;
+        }
+        if(islower(textDigit)) {
+            digit = textDigit - 'a' + 10;
         }
     }
     if(digit >= numeralSystem) {
