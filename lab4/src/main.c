@@ -123,13 +123,15 @@ List * split(char * str) {
                     pushBackOper(&opersStack, symbol);
                     break;
                 case '(':
+                    list->isBroken |= index > 0 && isdigit(str[index - 1]);
                     pushBackOper(&opersStack, symbol);
                     break;
                 case ')':
+                    list->isBroken |= isdigit(str[index + 1]);
                     while(opersStack.end != NULL && opersStack.end->oper != '(') {
                             move(&opersStack, list);
                     }
-                    list->isBroken |= popBack(&opersStack) ? 0 : 1;
+                    list->isBroken |= !popBack(&opersStack);
                     break;
                 default:
                     list->isBroken = 1;
