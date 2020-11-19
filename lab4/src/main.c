@@ -169,6 +169,7 @@ void count(List * numStack, char oper) {
         case '/':
             if(num2 == 0) {
                 numStack->isBroken = 2;
+                pushBackNum(numStack, -1);
                 return;
             }
             res = num1 / num2;
