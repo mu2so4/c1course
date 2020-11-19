@@ -169,7 +169,6 @@ void count(List * numStack, char oper) {
         case '/':
             if(num2 == 0) {
                 numStack->isBroken = 2;
-                pushBackNum(numStack, -1);
                 return;
             }
             res = num1 / num2;
@@ -195,7 +194,7 @@ List countAll(List * ariph) {
             count(&numStack, iter->oper);
         }
     }
-    if(numStack.begin != numStack.end || numStack.end == NULL) {
+    if(numStack.begin != numStack.end || (numStack.end == NULL && numStack.isBroken != 2)) {
         numStack.isBroken = 1;
     }
     return numStack;
