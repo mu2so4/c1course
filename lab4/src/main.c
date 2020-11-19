@@ -194,7 +194,7 @@ List countAll(List * ariph) {
             count(&numStack, iter->oper);
         }
     }
-    if(numStack.begin != numStack.end) {
+    if(numStack.begin != numStack.end || numStack.end == NULL) {
         numStack.isBroken = 1;
     }
     return numStack;
