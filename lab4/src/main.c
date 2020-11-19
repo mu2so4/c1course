@@ -129,7 +129,7 @@ List * split(char * str) {
                     while(opersStack.end != NULL && opersStack.end->oper != '(') {
                             move(&opersStack, list);
                     }
-                    list->isBroken |= !popBack(&opersStack);
+                    list->isBroken |= popBack(&opersStack) ? 0 : 1;
                     break;
                 default:
                     list->isBroken = 1;
@@ -184,17 +184,15 @@ List countAll(List * ariph) {
         numStack.isBroken = 1;
         return numStack;
     }
-    int areThereOpers = 0;
     for(Item * iter = ariph->begin; iter != NULL && !numStack.isBroken; iter = iter->next) {
         if(iter->isNum) {
             pushBackNum(&numStack, iter->value);
         }
         else {
-            areThereOpers = 1;
             count(&numStack, iter->oper);
         }
     }
-    if(numStack.begin != numStack.end || !areThereOpers) {
+    if(numStack.begin != numStack.end) {
         numStack.isBroken = 1;
     }
     return numStack;
