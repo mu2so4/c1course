@@ -64,7 +64,7 @@ char * getString() {
 void BoyerMooreSearch(char * needle, char * haystack) {
     StopSymbols bank = createShiftsBank(needle);
     unsigned haystackLength = strlen(haystack);
-    for(int index = bank.needleLength - 1; index < haystackLength;) {
+    for(unsigned index = bank.needleLength - 1; index < haystackLength;) {
         int current = bank.needleLength - 1, pos = index;
         for(; current >= 0; current--, pos--) {
             printf("%d ", pos + 1);
@@ -82,7 +82,7 @@ void BoyerMooreSearch(char * needle, char * haystack) {
 int main() {
     setlocale(LC_ALL, "Rus");
     char needle[20];
-    fgets(needle, 19, stdin);
+    assert(fgets(needle, 19, stdin) > 0);
     needle[strlen(needle) - 1] = '\0';
     char * haystack = getString();
     BoyerMooreSearch(needle, haystack);
