@@ -88,5 +88,6 @@ int main() {
     needle[strlen(needle) - 1] = '\0';
     char * haystack = getString();
     BoyerMooreSearch(needle, haystack);
+    free(haystack);
     return 0;
 }
