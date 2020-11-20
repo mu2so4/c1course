@@ -82,7 +82,7 @@ void BoyerMooreSearch(char * needle, char * haystack) {
 int main() {
     setlocale(LC_ALL, "Rus");
     char needle[20];
-    if(fgets(needle, 19, stdin) < 1) {
+    if(fgets(needle, 19, stdin) == NULL) {
         return 0;
     }
     needle[strlen(needle) - 1] = '\0';
