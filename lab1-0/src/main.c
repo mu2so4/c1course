@@ -38,7 +38,7 @@ char * getString() {
     char * str = (char *) malloc(sizeof(char) * 100);
     char symbol;
     unsigned size = 1;
-    while(scanf("%c", &symbol)) {
+    while(scanf("%c", &symbol) && !feof(stdin)) {
         if(symbol == '\n') {
             break;
         }
