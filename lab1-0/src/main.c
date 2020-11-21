@@ -52,7 +52,7 @@ char * getString() {
         }
         str[size - 2] = symbol;
     }
-    if(size != 0) {
+    if(size) {
         str[size - 1] = '\0';
     }
     str = realloc(str, size);
@@ -63,7 +63,7 @@ char * getString() {
 void BoyerMooreSearch(char * needle, char * haystack) {
     StopSymbols bank = createShiftsBank(needle);
     unsigned haystackLength = strlen(haystack);
-    if(bank.needleLength > haystackLength) {
+    if(bank.needleLength > haystackLength && haystackLength) {
         printf("%d ", bank.needleLength);
         return;
     }
