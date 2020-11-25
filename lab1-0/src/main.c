@@ -5,11 +5,11 @@
 #include <locale.h>
 typedef struct StopSymbols StopSymbols;
 typedef struct Haystack Haystack;
-const unsigned PORTION_LENGTH = 100;
+const int PORTION_LENGTH = 100;
 
 struct StopSymbols {
     int shifts[256];
-    unsigned needleLength;
+    int needleLength;
 };
 
 unsigned shiftNeedle(const StopSymbols * bank, unsigned char symbol) {
