@@ -27,10 +27,10 @@ void addShift(StopSymbols * bank, unsigned char symbol, int pos) {
 
 StopSymbols createShiftsBank(char * needle) {
     StopSymbols bank = {.needleLength = strlen(needle)};
-    for(unsigned index = 0; index < 256; index++) {
+    for(int index = 0; index < 256; index++) {
         bank.shifts[index] = 0;
     }
-    for(unsigned index = 0; index < bank.needleLength - 1; index++) {
+    for(int index = 0; index < bank.needleLength - 1; index++) {
         addShift(&bank, needle[index], bank.needleLength - index - 1);
     }
     return bank;
