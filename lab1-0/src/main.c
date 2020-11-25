@@ -98,7 +98,6 @@ void BoyerMooreSearch(char * needle, FILE * haystackInput) {
             index += shiftNeedle(&bank, getSymbol(&haystack, index));
         }
     }
-    free(haystack.portion);
 }
 
 int main() {
