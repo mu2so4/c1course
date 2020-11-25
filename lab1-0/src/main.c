@@ -4,6 +4,8 @@
 #include <string.h>
 #include <locale.h>
 typedef struct StopSymbols StopSymbols;
+typedef struct Haystack Haystack;
+const unsigned PORTION_LENGTH = 100;
 
 struct StopSymbols {
     int shifts[256];
@@ -34,56 +36,79 @@ StopSymbols createShiftsBank(char * needle) {
     return bank;
 }
 
-char * getString() {
-    char * str = (char *) malloc(sizeof(char) * 100);
+struct Haystack {
+    char * portion;
+    int startIndex;
+    FILE * file;
+};
+
+Haystack createHaystack(FILE * file) {
+    Haystack haystack = {.startIndex = 0, .file = file};
+    haystack.portion = (char *) malloc(PORTION_LENGTH * 2 + 1);
     char symbol;
-    unsigned size = 1;
-    while(scanf("%c", &symbol) && !feof(stdin)) {
-        size++;
-        if(size % 100 == 1) {
-            str = (char *) realloc(str, size + 99);
-            if(str == NULL) {
-                size = 0;
-                break;
-            }
+    unsigned index;
+    for(index = 0; index < PORTION_LENGTH * 2; index++) {
+        if(fscanf(file, "%c", &symbol) < 1) {
+            haystack.portion[index] = '\0';
         }
-        str[size - 2] = symbol;
+        else {
+            haystack.portion[index] = symbol;
+        }
     }
-    if(size) {
-        str[size - 1] = '\0';
-    }
-    str = realloc(str, size);
-    assert(str != NULL);
-    return str;
+    haystack.portion[index] = '\0';
+    return haystack;
 }
 
-void BoyerMooreSearch(char * needle, char * haystack) {
+char getSymbol(Haystack * haystack, int index) {
+    assert(index >= haystack->startIndex);
+    if(index - haystack->startIndex >= PORTION_LENGTH * 2 && !feof(haystack->file)) {
+        int pos = 0;
+        for(; pos < PORTION_LENGTH; pos++) {
+            haystack->portion[pos] = haystack->portion[pos + PORTION_LENGTH];
+        }
+        for(pos = PORTION_LENGTH; pos < PORTION_LENGTH * 2; pos++) {
+            if(fscanf(haystack->file, "%c", &haystack->portion[pos]) < 1) {
+                haystack->portion[pos] = '\0';
+            }
+        }
+        haystack->startIndex += PORTION_LENGTH;
+    }
+    return index >= haystack->startIndex + PORTION_LENGTH * 2 && feof(haystack->file) ? '\0' :
+            haystack->portion[index - haystack->startIndex];
+}
+
+void BoyerMooreSearch(char * needle, FILE * haystackInput) {
     StopSymbols bank = createShiftsBank(needle);
-    unsigned haystackLength = strlen(haystack);
-    for(unsigned index = bank.needleLength - 1; index < haystackLength;) {
+    Haystack haystack = createHaystack(haystackInput);
+    for(unsigned index = bank.needleLength - 1;;) {
         int current = bank.needleLength - 1, pos = index;
         for(; current >= 0; current--, pos--) {
+            char symbol = getSymbol(&haystack, pos);
+            if(symbol == '\0') {
+                free(haystack.portion);
+                return;
+            }
             printf("%d ", pos + 1);
-            if(haystack[pos] != needle[current]) {
-                index += shiftNeedle(&bank, haystack[index]);
+            if(symbol != needle[current]) {
+                index += shiftNeedle(&bank, getSymbol(&haystack, index));
                 break;
             }
         }
         if(current == -1) {
-            index += shiftNeedle(&bank, haystack[index]);
+            index += shiftNeedle(&bank, getSymbol(&haystack, index));
         }
     }
+    free(haystack.portion);
 }
 
 int main() {
     setlocale(LC_ALL, "Rus");
+
     char needle[20];
     if(fgets(needle, 19, stdin) == NULL) {
         return 0;
     }
     needle[strlen(needle) - 1] = '\0';
-    char * haystack = getString();
-    BoyerMooreSearch(needle, haystack);
-    free(haystack);
+    BoyerMooreSearch(needle, stdin);
     return 0;
 }
