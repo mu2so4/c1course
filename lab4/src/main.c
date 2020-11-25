@@ -202,7 +202,7 @@ List countAll(List * ariph) {
 
 int main() {
     char str[1002];
-    assert(fgets(str, 1000, stdin));
+    assert(fgets(str, 1002, stdin));
     str[strlen(str) - 1] = '\0';
     List * list = split(str), res = countAll(list);
     switch(res.isBroken) {
