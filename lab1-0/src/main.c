@@ -45,9 +45,12 @@ struct Haystack {
 Haystack createHaystack(FILE * file) {
     Haystack haystack = {.startIndex = 0, .file = file};
     haystack.portion = (char *) malloc(PORTION_LENGTH * 2 + 1);
-    char symbol;
-    unsigned index;
-    for(index = 0; index < PORTION_LENGTH * 2; index++) {
+    if(haystack.portion == NULL) {
+        printf("Out of memory\n");
+        abort();
+    }
+    for(int index = 0; index < PORTION_LENGTH * 2; index++) {
+        char symbol;
         if(fscanf(file, "%c", &symbol) < 1) {
             haystack.portion[index] = '\0';
         }
@@ -55,8 +58,12 @@ Haystack createHaystack(FILE * file) {
             haystack.portion[index] = symbol;
         }
     }
-    haystack.portion[index] = '\0';
+    haystack.portion[PORTION_LENGTH * 2] = '\0';
     return haystack;
+}
+
+void destroyHaystack(Haystack * haystack) {
+    free(haystack->portion);
 }
 
 char getSymbol(Haystack * haystack, int index) {
@@ -85,7 +92,7 @@ void BoyerMooreSearch(char * needle, FILE * haystackInput) {
         for(; current >= 0; current--, pos--) {
             char symbol = getSymbol(&haystack, pos);
             if(symbol == '\0') {
-                free(haystack.portion);
+                destroyHaystack(&haystack);
                 return;
             }
             printf("%d ", pos + 1);
@@ -104,7 +111,7 @@ int main() {
     setlocale(LC_ALL, "Rus");
 
     char needle[20];
-    if(fgets(needle, 19, stdin) == NULL) {
+    if(fgets(needle, 20, stdin) == NULL) {
         return 0;
     }
     needle[strlen(needle) - 1] = '\0';
