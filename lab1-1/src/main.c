@@ -9,7 +9,7 @@ int hash(const char * str, int size) {
     int res = 0;
     for(int index = size - 1; index >= 0; index--) {
         fprintf(stderr, "code of %c: %d\n", str[index], (unsigned char) str[index]); fflush(0);
-        res = res * 3 + (unsigned char) (str[index]) % 3;
+        res = res * 3 + (unsigned char) (str[index] - (str[index] > 127 ? 1 : 0)) % 3;
     }
     return res;
 }
@@ -49,7 +49,7 @@ void pushBack(CharHashList * list, unsigned char symbol) {
         }
         list->end = item;
         list->currentLength++;
-        list->hash += symbol % 3 * list->multiplier;
+        list->hash += (symbol - (symbol > 127 ? 1 : 0)) % 3 * list->multiplier;
         list->multiplier *= 3;
     }
     else {
