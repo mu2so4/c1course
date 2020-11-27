@@ -244,8 +244,11 @@ List countAll(List * ariph) {
 
 int main() {
     char str[1002];
-    assert(fgets(str, 1002, stdin));
+    if(fgets(str, 1002, stdin) == NULL) {
+        return 0;
+    }
     str[strlen(str) - 1] = '\0';
+    fprintf(stderr, "source code line number %d, strlen %d, str \"%s\"\n", __LINE__, (int) strlen(str), str); fflush(0);
     List * list = split(str), res = countAll(list);
     switch(res.isBroken) {
         case 0:
