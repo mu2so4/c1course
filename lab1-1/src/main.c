@@ -6,13 +6,12 @@ typedef struct CharItem CharItem;
 typedef struct CharHashList CharHashList;
 
 unsigned char correctCyrillic(unsigned char symbol) {
-    return symbol - (symbol > 127 ? 2 : 0);
+    return symbol - (symbol > 127 ? 3 : 0);
 }
 
 int hash(const char * str, int size) {
     int res = 0;
     for(int index = size - 1; index >= 0; index--) {
-        fprintf(stderr, "code of %c: %d\n", str[index], (unsigned char) str[index]); fflush(0);
         res = res * 3 + correctCyrillic(str[index]) % 3;
     }
     return res;
@@ -100,7 +99,7 @@ int main() {
                 for(int checkIndex = index - list.needleLength + 1;
                         checkIndex <= index; checkIndex++, iter = iter->next) {
                     printf(" %d", checkIndex);
-                    if(iter->symbol != needle[checkIndex - (index - list.needleLength + 1)]) {
+                    if(iter->symbol != (unsigned char) needle[checkIndex - (index - list.needleLength + 1)]) {
                         break;
                     }
                 }
