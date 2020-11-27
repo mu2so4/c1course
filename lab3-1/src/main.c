@@ -57,7 +57,7 @@ int main() {
         swap(&array[0], &array[index]);
         createBinaryHeap(array, index, 0);
     }
-    for(int index = 0; index < arraySize index++) {
+    for(int index = 0; index < arraySize; index++) {
         printf("%d ", array[index]);
     }
     free(array);
