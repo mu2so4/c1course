@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <string.h>
 typedef struct List List;
 typedef struct Item Item;
+
+void reportOutOfMemoryError() {
+    printf("Out of memory\n");
+    abort();
+}
 
 struct Item {
     int isNum;
@@ -31,7 +35,9 @@ void pushBack(List * list, Item * item) {
 
 void pushBackNum(List * list, int num) {
     Item * item = (Item *) malloc(sizeof(Item));
-    assert(item != NULL);
+    if(item == NULL) {
+        reportOutOfMemoryError();
+    }
     item->isNum = 1;
     item->value = num;
     pushBack(list, item);
@@ -39,7 +45,9 @@ void pushBackNum(List * list, int num) {
 
 void pushBackOper(List * list, char oper) {
     Item * item = (Item *) malloc(sizeof(Item));
-    assert(item != NULL);
+    if(item == NULL) {
+        reportOutOfMemoryError();
+    }
     item->isNum = 0;
     item->oper = oper;
     pushBack(list, item);
@@ -85,15 +93,21 @@ void merge(List * list, List * stack) {
     while(move(stack, list));
 }
 
+int isDigit(char symbol) {
+    return symbol >= '0' && symbol <= '9';
+}
+
 List * split(char * str) {
     int currentNum = -1;
     List * list = (List *) malloc(sizeof(List)), opersStack = {NULL, NULL, 0};
-    assert(list != NULL);
+    if(list == NULL) {
+        reportOutOfMemoryError();
+    }
     list->begin = list->end = NULL;
     list->isBroken = 0;
     for(int index = 0; str[index] != '\0' && !list->isBroken; index++) {
         char symbol = str[index];
-        if(symbol >= '0' && symbol <= '9') {
+        if(isDigit(symbol)) {
             currentNum = (currentNum == -1 ? 0 : 10 * currentNum) + (int) (symbol - '0');
         }
         else {
@@ -122,11 +136,11 @@ List * split(char * str) {
                     pushBackOper(&opersStack, symbol);
                     break;
                 case '(':
-                    list->isBroken |= index > 0 && str[index - 1] >= '0' && str[index - 1] <= '9';
+                    list->isBroken |= index > 0 && isDigit(str[index - 1]);
                     pushBackOper(&opersStack, symbol);
                     break;
                 case ')':
-                    list->isBroken |= str[index + 1] >= '0' && str[index + 1] <= '9';
+                    list->isBroken |= isDigit(str[index + 1]);
                     while(opersStack.end != NULL && opersStack.end->oper != '(') {
                             move(&opersStack, list);
                     }
