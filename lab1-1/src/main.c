@@ -5,12 +5,15 @@
 typedef struct CharItem CharItem;
 typedef struct CharHashList CharHashList;
 
+unsigned char correctCyrillic(unsigned char symbol) {
+    return symbol - (symbol > 127 ? 2 : 0);
+}
+
 int hash(const char * str, int size) {
     int res = 0;
     for(int index = size - 1; index >= 0; index--) {
         fprintf(stderr, "code of %c: %d\n", str[index], (unsigned char) str[index]); fflush(0);
-        unsigned char symbol = str[index];
-        res = res * 3 + (unsigned char) (symbol - (symbol > 127 ? 1 : 0)) % 3;
+        res = res * 3 + correctCyrillic(str[index]) % 3;
     }
     return res;
 }
@@ -50,7 +53,7 @@ void pushBack(CharHashList * list, unsigned char symbol) {
         }
         list->end = item;
         list->currentLength++;
-        list->hash += (symbol - (symbol > 127 ? 1 : 0)) % 3 * list->multiplier;
+        list->hash += correctCyrillic(symbol) % 3 * list->multiplier;
         list->multiplier *= 3;
     }
     else {
