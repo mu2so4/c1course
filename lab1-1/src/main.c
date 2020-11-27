@@ -8,7 +8,8 @@ typedef struct CharHashList CharHashList;
 int hash(const char * str, int size) {
     int res = 0;
     for(int index = size - 1; index >= 0; index--) {
-        res = res * 3 + (unsigned char) str[index] % 3;
+        fprintf(stderr, "code of %c: %d\n", str[index], (unsigned char) str[index]); fflush(0);
+        res = res * 3 + (unsigned char) (str[index]) % 3;
     }
     return res;
 }
