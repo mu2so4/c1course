@@ -22,15 +22,15 @@ int max(int * array, int unsortedSize, int index1, int index2) {
     return array[index1] > array[index2] ? index1 : index2;
 }
 
-void toSortTree(int * array, int unsortedSize, int index) {
+void createBinaryHeap(int * array, int unsortedSize, int index) {
     if(index >= unsortedSize) {
         return;
     }
-    int nodes = max(array, unsortedSize, index * 2 + 1, index * 2 + 2),
-            greatest = nodes == -1 ? index : max(array, unsortedSize, index, nodes);
+    int nodes = max(array, unsortedSize, index * 2 + 1, index * 2 + 2);
+    int greatest = (nodes == -1 ? index : max(array, unsortedSize, index, nodes));
     swap(&array[index], &array[greatest]);
     if(greatest != index) {
-        toSortTree(array, unsortedSize, greatest);
+        createBinaryHeap(array, unsortedSize, greatest);
     }
 }
 
@@ -39,21 +39,26 @@ int main() {
     if(scanf("%d", &cou) < 1) {
         return 0;
     }
-    int array[cou];
+    int * array = (int *) malloc(sizeof(int) * cou);
+    if(array == NULL) {
+        printf("Out of memory\n");
+        abort();
+    }
     for(int index = 0; index < cou; index++) {
         if(scanf("%d", &array[index]) < 1) {
             return 0;
         }
     }
     for(int index = cou / 2 - 1; index >= 0; index--) {
-        toSortTree(array, cou, index);
+        createBinaryHeap(array, cou, index);
     }
     for(int index = cou - 1; index > 0; index--) {
         swap(&array[0], &array[index]);
-        toSortTree(array, index, 0);
+        createBinaryHeap(array, index, 0);
     }
     for(int index = 0; index < cou; index++) {
         printf("%d ", array[index]);
     }
+    free(array);
     return 0;
 }
