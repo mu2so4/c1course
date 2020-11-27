@@ -112,7 +112,7 @@ List * split(char * str) {
     for(int index = 0; str[index] != '\0' && !list->isBroken; index++) {
         fprintf(stderr, "source code line number %d\n", __LINE__); fflush(0);
         char symbol = str[index];
-        if(isdigit(symbol)) {
+        if(symbol >= '0' && symbol <= '9') {
             fprintf(stderr, "source code line number %d\n", __LINE__); fflush(0);
             currentNum = (currentNum == -1 ? 0 : 10 * currentNum) + (int) (symbol - '0');
         }
