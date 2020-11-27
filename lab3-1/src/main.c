@@ -35,29 +35,29 @@ void createBinaryHeap(int * array, int unsortedSize, int index) {
 }
 
 int main() {
-    int cou;
-    if(scanf("%d", &cou) < 1) {
+    int arraySize;
+    if(scanf("%d", &arraySize) < 1) {
         return 0;
     }
-    int * array = (int *) malloc(sizeof(int) * cou);
+    int * array = (int *) malloc(sizeof(int) * arraySize);
     if(array == NULL) {
         printf("Out of memory\n");
         abort();
     }
-    for(int index = 0; index < cou; index++) {
+    for(int index = 0; index < arraySize; index++) {
         if(scanf("%d", &array[index]) < 1) {
             free(array);
             return 0;
         }
     }
-    for(int index = cou / 2 - 1; index >= 0; index--) {
-        createBinaryHeap(array, cou, index);
+    for(int index = arraySize / 2 - 1; index >= 0; index--) {
+        createBinaryHeap(array, arraySize, index);
     }
-    for(int index = cou - 1; index > 0; index--) {
+    for(int index = arraySize - 1; index > 0; index--) {
         swap(&array[0], &array[index]);
         createBinaryHeap(array, index, 0);
     }
-    for(int index = 0; index < cou; index++) {
+    for(int index = 0; index < arraySize index++) {
         printf("%d ", array[index]);
     }
     free(array);
