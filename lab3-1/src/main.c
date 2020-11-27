@@ -46,6 +46,7 @@ int main() {
     }
     for(int index = 0; index < cou; index++) {
         if(scanf("%d", &array[index]) < 1) {
+            free(array);
             return 0;
         }
     }
