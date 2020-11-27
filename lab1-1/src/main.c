@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 typedef struct CharItem CharItem;
 typedef struct CharHashList CharHashList;
 
@@ -73,27 +74,27 @@ void clear(CharHashList * str) {
 
 
 int main() {
-    FILE * input = fopen("in.txt", "r"), * output = fopen("out.txt", "w");
+    setlocale(LC_ALL, "Russian");
 
     char needle[20];
-    if(fgets(needle, 20, input) == NULL) {
+    if(fgets(needle, 20, stdin) == NULL) {
         return 0;
     }
     int size = strlen(needle);
     needle[size - 1] = '\0';
     size--;
     int needleHash = hash(needle, size);
-    fprintf(output, "%d", needleHash);
+    printf("%d", needleHash);
     CharHashList list = createHashList(size);
     if(size) {
         char symbol;
-        for(int index = 1; fscanf(input, "%c", &symbol) > 0; index++) {
+        for(int index = 1; scanf("%c", &symbol) > 0; index++) {
             pushBack(&list, symbol);
             if(needleHash == list.hash && list.currentLength == list.needleLength) {
                 CharItem * iter = list.begin;
                 for(int checkIndex = index - list.needleLength + 1;
                         checkIndex <= index; checkIndex++, iter = iter->next) {
-                    fprintf(output, " %d", checkIndex);
+                    printf(" %d", checkIndex);
                     if(iter->symbol != needle[checkIndex - (index - list.needleLength + 1)]) {
                         break;
                     }
@@ -102,12 +103,7 @@ int main() {
 
         }
     }
-
-
-
     clear(&list);
-    fclose(input);
-    fclose(output);
     return 0;
 }
 
