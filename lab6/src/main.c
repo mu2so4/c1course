@@ -108,10 +108,14 @@ void addNode(SearchTree ** root, int value) {
 int main() {
     SearchTree * tree = NULL;
     int count;
-    scanf("%d\n", &count);
+    if(scanf("%d\n", &count) < 1) {
+        return 0;
+    }
     for(int index = 0; index < count; index++) {
         int number;
-        scanf("%d", &number);
+        if(scanf("%d", &number) < 1) {
+            return 0;
+        }
         addNode(&tree, number);
     }
     if(!count) {
