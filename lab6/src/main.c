@@ -8,15 +8,8 @@ struct SearchTree {
     SearchTree * left, * right;
 };
 
-SearchTree * createNode(int value) {
-    SearchTree * node = (SearchTree *) malloc(sizeof(SearchTree));
-    if(node == NULL) {
-        printf("Out of memory\n");
-        abort();
-    }
-    node->left = node->right = NULL;
-    node->depth = 1;
-    node->value = value;
+SearchTree createNode(int value) {
+    SearchTree node = {value, 1, NULL, NULL};
     return node;
 }
 
@@ -76,13 +69,13 @@ void leftRightRotation(SearchTree ** root) {
     simpleRightRotation(root);
 }
 
-void addNode(SearchTree ** root, int value) {
-    if(*root == NULL) {
-        *root = createNode(value);
+void addNode(SearchTree ** root, SearchTree * node) {
+    if(!*root) {
+        *root = node;
         return;
     }
-    if(value < (*root)->value) {
-        addNode(&((*root)->left), value);
+    if(node->value < (*root)->value) {
+        addNode(&((*root)->left), node);
         if(putDepth(*root) == -2) {
             if(getDif((*root)->left) <= 0) {
                 simpleRightRotation(root);
@@ -93,7 +86,7 @@ void addNode(SearchTree ** root, int value) {
         }
     }
     else {
-        addNode(&((*root)->right), value);
+        addNode(&((*root)->right), node);
         if(putDepth(*root) == 2) {
             if(getDif((*root)->right) >= 0) {
                 simpleLeftRotation(root);
@@ -106,24 +99,32 @@ void addNode(SearchTree ** root, int value) {
 }
 
 int main() {
-    SearchTree * tree = NULL;
     int count;
     if(scanf("%d\n", &count) < 1) {
         return 0;
     }
+    if(!count) {
+        printf("0\n");
+        return 0;
+    }
+
+    SearchTree * array = (SearchTree *) malloc(sizeof(SearchTree) * count);
+    if(!array) {
+        printf("Out of memory\n");
+        abort();
+    }
+    SearchTree * tree = NULL;
     for(int index = 0; index < count; index++) {
         int number;
         if(scanf("%d", &number) < 1) {
+            free(array);
             return 0;
         }
-        addNode(&tree, number);
+        array[index] = createNode(number);
+        addNode(&tree, &array[index]);
     }
-    if(!count) {
-        printf("0\n");
-    }
-    else {
-        printf("%d\n", tree->depth);
-    }
-    destroyTree(tree);
+    printf("%d\n", tree->depth);
+
+    free(array);
     return 0;
 }
