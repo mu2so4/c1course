@@ -32,15 +32,6 @@ char getDisbalance(const SearchTree * tree) {
     return right - left;
 }
 
-void destroyTree(SearchTree * root) {
-    if(root == NULL) {
-        return;
-    }
-    destroyTree(root->left);
-    destroyTree(root->right);
-    free(root);
-}
-
 void simpleLeftRotation(SearchTree ** root) {
     SearchTree * p = (*root)->right->left;
     (*root)->right->left = *root;
