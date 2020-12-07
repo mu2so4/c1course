@@ -23,7 +23,7 @@ char putDepth(SearchTree * tree) {
     return right - left;
 }
 
-char getDif(const SearchTree * tree) {
+char getDisbalance(const SearchTree * tree) {
     if(tree == NULL) {
         return 0;
     }
@@ -77,7 +77,7 @@ void addNode(SearchTree ** root, SearchTree * node) {
     if(node->value < (*root)->value) {
         addNode(&((*root)->left), node);
         if(putDepth(*root) == -2) {
-            if(getDif((*root)->left) <= 0) {
+            if(getDisbalance((*root)->left) <= 0) {
                 simpleRightRotation(root);
             }
             else {
@@ -88,7 +88,7 @@ void addNode(SearchTree ** root, SearchTree * node) {
     else {
         addNode(&((*root)->right), node);
         if(putDepth(*root) == 2) {
-            if(getDif((*root)->right) >= 0) {
+            if(getDisbalance((*root)->right) >= 0) {
                 simpleLeftRotation(root);
             }
             else {
