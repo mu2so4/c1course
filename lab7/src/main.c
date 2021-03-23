@@ -67,8 +67,6 @@ void destroyEdges(Vertex *vertices, int count) {
 
 
 int main() {
-    freopen("in.txt", "r", stdin);
-    freopen("out.txt", "w", stdout);
     int verticesCount, edgesCount;
     if(scanf("%d", &verticesCount) < 1) {
         printf("bad number of lines\n");
