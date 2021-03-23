@@ -118,8 +118,9 @@ int main() {
     }
     if(status) {
         for(StackItem *item = stack->begin; item; item = item->next) {
-            printf("%hd ", item->vertexID);
+            printf("%d ", (int) item->vertexID);
         }
+        printf("\n");
     }
     else {
         printf("impossible to sort\n");
