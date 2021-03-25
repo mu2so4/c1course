@@ -84,7 +84,7 @@ int main() {
         printf("bad number of edges\n");
         return 0;
     }
-    Vertex vertices[verticesCount];
+    Vertex *vertices = (Vertex*) malloc(sizeof(Vertex) * verticesCount);
     for(int index = 0; index < verticesCount; index++) {
         vertices[index].outgoingEdgesCount = vertices[index].status = 0;
         vertices[index].maxCount = 6;
@@ -95,11 +95,13 @@ int main() {
         if(scanf("%d %d", &ver1, &ver2) < 2) {
             printf("bad number of lines\n");
             destroyEdges(vertices, verticesCount);
+            free(vertices);
             return 0;
         }
         if(ver1 < 1 || ver1 > verticesCount || ver2 < 1 || ver2 > verticesCount) {
             printf("bad vertex\n");
             destroyEdges(vertices, verticesCount);
+            free(vertices);
             return 0;
         }
         Vertex *vert = vertices + ver1 - 1;
@@ -128,5 +130,6 @@ int main() {
 
     destroyEdges(vertices, verticesCount);
     destroyStack(stack);
+    free(vertices);
     return 0;
 }
