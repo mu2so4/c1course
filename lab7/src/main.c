@@ -1,29 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-typedef struct Stack Stack;
-typedef struct StackItem StackItem;
-typedef struct Vertex Vertex;
-typedef enum VertexColor VertexColor;
 
-enum VertexColor {
+typedef enum VertexColor {
     WHITE = 0, GREY = 1, BLACK = 2
-};
+} VertexColor;
 
-struct StackItem {
+typedef struct StackItem {
     int vertexID;
-    StackItem *next;
-};
+    struct StackItem *next;
+} StackItem;
 
-struct Stack {
+typedef struct Stack {
     StackItem *begin;
-};
+} Stack;
 
-struct Vertex {
+typedef struct Vertex {
     short *outgoingEdges;
     int outgoingEdgesCount, maxCount;
     VertexColor status;
-};
+} Vertex;
 
 Stack *createStack() {
     Stack *res = (Stack*) malloc(sizeof(Stack));
