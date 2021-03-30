@@ -1,8 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 typedef struct Stack Stack;
 typedef struct StackItem StackItem;
 typedef struct Vertex Vertex;
+typedef enum VertexColor VertexColor;
+
+enum VertexColor {
+    WHITE = 0, GREY = 1, BLACK = 2
+};
 
 struct StackItem {
     int vertexID;
@@ -15,7 +21,8 @@ struct Stack {
 
 struct Vertex {
     short *outgoingEdges;
-    int outgoingEdgesCount, maxCount, status;
+    int outgoingEdgesCount, maxCount;
+    VertexColor status;
 };
 
 Stack *createStack() {
@@ -40,21 +47,22 @@ void destroyStack(Stack *stack) {
     free(stack);
 }
 
-int topSort(int vertexID, Vertex *vertices, Stack *stack) {
+bool topSort(int vertexID, Vertex *vertices, Stack *stack) {
     Vertex *current = vertices + vertexID - 1;
     switch(current->status) {
-        case 1: return 0;
-        case 2: return 1;
+        case GREY: return false;
+        case BLACK: return true;
+        case WHITE: break;
     }
-    current->status = 1;
-    int status = 1;
+    bool status = true;
+    current->status = GREY;
     for(int index = 0; index < current->outgoingEdgesCount && status; index++) {
-        status *= topSort(current->outgoingEdges[index], vertices, stack);
+        status &= topSort(current->outgoingEdges[index], vertices, stack);
     }
     if(!status) {
         return 0;
     }
-    current->status = 2;
+    current->status = BLACK;
     pushBack(stack, vertexID);
     return 1;
 }
@@ -85,10 +93,20 @@ int main() {
         return 0;
     }
     Vertex *vertices = (Vertex*) malloc(sizeof(Vertex) * verticesCount);
+    if(!vertices) {
+        printf("out of memory, line: %d\n", __LINE__);
+        abort();
+    }
     for(int index = 0; index < verticesCount; index++) {
-        vertices[index].outgoingEdgesCount = vertices[index].status = 0;
+        vertices[index].outgoingEdgesCount = vertices[index].status = WHITE;
         vertices[index].maxCount = 6;
         vertices[index].outgoingEdges = (short*) malloc(sizeof(short) * 6);
+        if(!vertices[index].outgoingEdges) {
+            printf("out of memomy on line %d\n", __LINE__);
+            destroyEdges(vertices, index);
+            free(vertices);
+            abort();
+        }
     }
     for(int index = 0; index < edgesCount; index++) {
         int ver1, ver2;
@@ -107,16 +125,24 @@ int main() {
         Vertex *vert = vertices + ver1 - 1;
         if(vert->maxCount == vert->outgoingEdgesCount) {
             vert->maxCount = vert->maxCount * 3 / 2 + 1;
+            short *prev = vert->outgoingEdges;
             vert->outgoingEdges =
                 (short*) realloc(vert->outgoingEdges, sizeof(short) * vert->maxCount);
+            if(!vert->outgoingEdges) {
+                printf("out of memory on line %d\n", __LINE__);
+                vert->outgoingEdges = prev;
+                destroyEdges(vertices, verticesCount);
+                free(vertices);
+                abort();
+            }
         }
         vert->outgoingEdges[vert->outgoingEdgesCount] = ver2;
         vert->outgoingEdgesCount++;
     }
     Stack *stack = createStack();
-    int status = 1;
+    bool status = true;
     for(int index = 0; index < verticesCount && status; index++) {
-        status *= topSort(index + 1, vertices, stack);
+        status &= topSort(index + 1, vertices, stack);
     }
     if(status) {
         for(StackItem *item = stack->begin; item; item = item->next) {
