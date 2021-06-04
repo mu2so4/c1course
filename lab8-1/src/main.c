@@ -38,7 +38,6 @@ int main() {
         if(!createArray(arrays + index)) {
             printf("out of memory, line %d\n", __LINE__ - 1);
             destroyArrays(arrays, index);
-            free(arrays);
             free(verticesStates);
             abort();
         }
@@ -49,21 +48,18 @@ int main() {
         if(scanf("%d %d %d", &vert1, &vert2, &length) < 3) {
             printf("bad number of lines\n");
             destroyArrays(arrays, verticesCount);
-            free(arrays);
             free(verticesStates);
             return 0;
         }
         if(vert1 < 1 || vert1 > verticesCount || vert2 < 1 || vert2 > verticesCount) {
             printf("bad vertex\n");
             destroyArrays(arrays, verticesCount);
-            free(arrays);
             free(verticesStates);
             return 0;
         }
         if(length < 0) {
             printf("bad length\n");
             destroyArrays(arrays, verticesCount);
-            free(arrays);
             free(verticesStates);
             return 0;
         }
@@ -73,7 +69,6 @@ int main() {
             printf("out of memory, line %d\n", __LINE__ - 1);
             destroyArrays(arrays, verticesCount);
             free(verticesStates);
-            free(arrays);
             abort();
         }
     }
@@ -82,7 +77,6 @@ int main() {
         printf("no spanning tree\n");
         destroyArrays(arrays, verticesCount);
         free(verticesStates);
-        free(arrays);
         return 0;
     }
 
@@ -91,7 +85,6 @@ int main() {
         printf("out of memory, line %d\n", __LINE__ - 1);
         destroyArrays(arrays, verticesCount);
         free(verticesStates);
-        free(arrays);
         abort();
     }
     for(int index = 0; index < verticesCount; index++) {
@@ -121,6 +114,5 @@ int main() {
     destroyArrays(arrays, verticesCount);
     free(takenEdges);
     free(verticesStates);
-    free(arrays);
     return 0;
 }
