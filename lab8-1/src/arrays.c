@@ -33,7 +33,6 @@ void destroyArrays(EdgeArrays *arrays, int count) {
         free(arrays[index].edges);
     }
     free(arrays);
-    arrays = NULL;
 }
 
 int compareEdges(const void *a, const void *b) {
