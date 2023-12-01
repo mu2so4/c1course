@@ -28,15 +28,11 @@ CharHashList createHashList(int needleSize) {
     return list;
 }
 
-void pushBack(CharHashList * list, unsigned char symbol) {
-    if(!list->needleLength) {
-        return;
-    }
+int pushBack(CharHashList * list, unsigned char symbol) {
     if(list->currentLength != list->needleLength) {
         CharItem * item = (CharItem *) malloc(sizeof(CharItem));
         if(item == NULL) {
-            printf("Out of memory\n");
-            abort();
+            return 0;
         }
         item->next = NULL;
         item->symbol = symbol;
@@ -50,19 +46,24 @@ void pushBack(CharHashList * list, unsigned char symbol) {
         list->currentLength++;
         list->hash += symbol % 3 * list->multiplier;
         list->multiplier *= 3;
+	if(list->currentLength == list->needleLength) {
+            list->end->next = list->begin;
+	    list->multiplier /= 3;
+	}
     }
     else {
-        list->hash = list->hash / 3 + symbol % 3 * (list->multiplier / 3);
+        list->hash = list->hash / 3 + symbol % 3 * list->multiplier;
         list->begin->symbol = symbol;
-        CharItem * item = list->begin;
-        list->begin = item->next;
-        list->end->next = item;
-        list->end = item;
-        item->next = NULL;
+        list->begin = list->begin->next;
+        list->end = list->end->next;
     }
+    return 1;
 }
 
 void clear(CharHashList * str) {
+    if(str->end != NULL) {
+        str->end->next = NULL;
+    }
     while(str->begin != NULL) {
         CharItem * item = str->begin->next;
         free(str->begin);
@@ -85,24 +86,28 @@ int main() {
     size--;
     int needleHash = hash(needle, size);
     printf("%d", needleHash);
+    if(size == 0) {
+        printf("\n");
+        return 0;
+    }
     CharHashList list = createHashList(size);
-    if(size) {
-        char symbol;
-        for(int index = 1; scanf("%c", &symbol) > 0; index++) {
-            pushBack(&list, symbol);
-            if(needleHash == list.hash && list.currentLength == list.needleLength) {
-                CharItem * iter = list.begin;
-                for(int checkIndex = index - list.needleLength + 1;
-                        checkIndex <= index; checkIndex++, iter = iter->next) {
-                    printf(" %d", checkIndex);
-                    if(iter->symbol != (unsigned char) needle[checkIndex - (index - list.needleLength + 1)]) {
-                        break;
-                    }
+    char symbol;
+    for(int index = 1; scanf("%c", &symbol) > 0; index++) {
+        if(pushBack(&list, symbol) == 0) {
+            perror("out of memory");
+            return 1;
+        }
+        if(needleHash == list.hash && list.currentLength == list.needleLength) {
+            CharItem * iter = list.begin;
+            for(int checkIndex = index - list.needleLength + 1; checkIndex <= index; checkIndex++, iter = iter->next) {
+                printf(" %d", checkIndex);
+                if(iter->symbol != (unsigned char) needle[checkIndex - (index - list.needleLength + 1)]) {
+                    break;
                 }
             }
-
         }
     }
+    printf("\n");
     clear(&list);
     return 0;
 }
