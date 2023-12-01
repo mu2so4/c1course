@@ -5,9 +5,9 @@
 typedef struct CharItem CharItem;
 typedef struct CharHashList CharHashList;
 
-int hash(const char * str, int size) {
+int hash(const char *str, size_t size) {
     int res = 0;
-    for(int index = size - 1; index >= 0; index--) {
+    for(int index = (int) size - 1; index >= 0; index--) {
         res = res * 3 + (unsigned char) str[index] % 3;
     }
     return res;
@@ -15,27 +15,37 @@ int hash(const char * str, int size) {
 
 struct CharItem {
     unsigned char symbol;
-    CharItem * next;
+    CharItem *next;
 };
 
 struct CharHashList {
-    int needleLength, currentLength, multiplier, hash;
-    CharItem * begin, * end;
+    size_t needleLength;
+    size_t currentLength;
+    int multiplier;
+    int hash;
+    CharItem *begin, *end;
 };
 
-CharHashList createHashList(int needleSize) {
+CharHashList createHashList(size_t needleSize) {
     CharHashList list = {needleSize, 0, 1, 0, NULL, NULL};
     return list;
 }
 
-int pushBack(CharHashList * list, unsigned char symbol) {
+CharItem *createCharItem(unsigned char symbol) {
+    CharItem *item = (CharItem*) calloc(1, sizeof(CharItem));
+    if(item == NULL) {
+        return NULL;
+    }
+    item->symbol = symbol;
+    return item;
+}
+
+int pushBack(CharHashList *list, unsigned char symbol) {
     if(list->currentLength != list->needleLength) {
-        CharItem * item = (CharItem *) malloc(sizeof(CharItem));
+        CharItem *item = createCharItem(symbol);
         if(item == NULL) {
             return 0;
         }
-        item->next = NULL;
-        item->symbol = symbol;
         if(!list->currentLength) {
             list->begin = item;
         }
@@ -74,6 +84,8 @@ void clear(CharHashList * str) {
 }
 
 
+
+
 int main() {
     setlocale(LC_ALL, "Russian");
 
@@ -81,7 +93,7 @@ int main() {
     if(fgets(needle, 20, stdin) == NULL) {
         return 0;
     }
-    int size = strlen(needle);
+    size_t size = strlen(needle);
     needle[size - 1] = '\0';
     size--;
     int needleHash = hash(needle, size);
@@ -91,21 +103,27 @@ int main() {
         return 0;
     }
     CharHashList list = createHashList(size);
-    char symbol;
-    for(int index = 1; scanf("%c", &symbol) > 0; index++) {
-        if(pushBack(&list, symbol) == 0) {
-            perror("out of memory");
-            return 1;
-        }
-        if(needleHash == list.hash && list.currentLength == list.needleLength) {
-            CharItem * iter = list.begin;
-            for(int checkIndex = index - list.needleLength + 1; checkIndex <= index; checkIndex++, iter = iter->next) {
-                printf(" %d", checkIndex);
-                if(iter->symbol != (unsigned char) needle[checkIndex - (index - list.needleLength + 1)]) {
-                    break;
+    char subHaystack[BUFSIZ + 1];
+    size_t position = 1;
+    while(fgets(subHaystack, BUFSIZ, stdin) != NULL) {
+        size_t subsize = strlen(subHaystack);
+	for(size_t index = 0; index < subsize; index++) {
+            if(pushBack(&list, subHaystack[index]) == 0) {
+                perror("out of memory");
+                clear(&list);
+                return 1;
+            }
+            if(needleHash == list.hash && list.currentLength == list.needleLength) {
+                CharItem *iter = list.begin;
+                for(size_t checkIndex = position - list.needleLength + 1; checkIndex <= position; checkIndex++, iter = iter->next) {
+                    printf(" %ld", checkIndex);
+                    if(iter->symbol != (unsigned char) needle[checkIndex - (position - list.needleLength + 1)]) {
+                        break;
+                    }
                 }
             }
-        }
+	    position++;
+	}
     }
     printf("\n");
     clear(&list);
